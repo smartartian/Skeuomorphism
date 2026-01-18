@@ -10,6 +10,7 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 const pathSrc = path.resolve(__dirname, 'src')
 
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/Skeuomorphism/' : '/',
   resolve: {
     alias: {
       '@': pathSrc,
