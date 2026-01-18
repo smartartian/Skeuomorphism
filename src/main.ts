@@ -1,0 +1,9 @@
+import { createApp } from 'vue'
+import App from './App.vue'
+
+// 引入全局样式
+import './styles/main.scss'
+
+const app = createApp(App)
+
+app.mount('#app')

@@ -1,0 +1,1148 @@
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': #5389FF, // Smartisan Blue
+    ),
+    'success': (
+      'base': #21BA45,
+    ),
+    'warning': (
+      'base': #F2711C,
+    ),
+    'danger': (
+      'base': #DB2828,
+    ),
+    'error': (
+      'base': #DB2828,
+    ),
+    'info': (
+      'base': #767676,
+    ),
+  ),
+  $button: (
+    'font-weight': 500,
+  ),
+  $input: (
+    'border-radius': 4px,
+  ),
+  $border-radius: (
+    'base': 6px,
+  ),
+);
+
+/* 
+  注意：此文件包含 SCSS 变量覆盖 和 拟物化样式混合宏。
+  变量覆盖通过 @forward 导出。
+  样式规则封装在 mixin 中，以避免在 additionalData 注入时产生重复 CSS。
+*/
+
+// 定义一个混合宏来包含所有的拟物化样式
+@mixin theme-overrides {
+  
+  /* 详细组件样式微调 & 拟物化风格增强 */
+  
+  :root {
+    --el-font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  
+    // 按钮 Button
+    --el-button-font-weight: 500;
+    --el-button-border-radius: 6px;
+    --el-button-hover-bg-color: #f5f5f5;
+    --el-button-active-bg-color: #e6e6e6;
+    
+    // 输入框 Input
+    --el-input-text-color: #626262;
+    --el-input-border-color: #CFCFCF;
+    --el-input-hover-border-color: #B5B5B5;
+    --el-input-focus-border-color: #5E94FF;
+    --el-input-placeholder-color: #CCCCCC;
+    --el-input-border-radius: 6px;
+  
+    // 卡片 Card
+    --el-card-border-radius: 8px;
+    --el-card-bg-color: #FFFFFF;
+  }
+  
+  /* =================================
+     按钮拟物化风格深度定制
+     ================================= */
+  
+  /* 1. 默认按钮 (Default Button) */
+  .el-button {
+    // 基础样式
+    height: 38px; // 稍微增加高度以容纳阴影
+    padding: 0 20px;
+    border: 1px solid #DCDCDC;
+    background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%); // 微弱渐变
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); // 底部微弱阴影
+    color: #333333;
+    // 移除 background 的 transition，解决渐变色切换时的闪烁问题
+    transition: border-color 0.2s, box-shadow 0.2s, color 0.2s;
+  
+    &:hover {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+      border-color: #C0C0C0;
+      color: #333333;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+  
+    &:active {
+      // 使用渐变而非纯色，保持类型一致性
+      background: linear-gradient(180deg, #EAEAEA 0%, #EAEAEA 100%);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); // 内阴影
+      border-color: #DCDCDC;
+    }
+    
+    &.is-plain {
+       background: #FFFFFF;
+       &:hover {
+          background: #F9F9F9;
+       }
+    }
+  
+    // 修复圆角按钮样式覆盖
+    &.is-circle {
+      border-radius: 50% !important;
+      width: 38px; // 强制宽高一致
+    }
+  }
+  
+  /* 2. 主按钮 (Primary Button) - 蓝色系 */
+  .el-button--primary:not(.is-plain) {
+    @include colored-button(
+      #6B9DFF, #5389FF, // bg
+      #487ACF,          // border
+      #7AA6FF, #6292FF, // hover
+      #4779E6,          // active bg
+      #3A66C6           // active border
+    );
+  }
+  
+  /* 3. 成功按钮 (Success Button) - 绿色系 */
+  .el-button--success:not(.is-plain) {
+    @include colored-button(
+      #2CCF52, #21BA45,
+      #1A9639,
+      #3DDB61, #29CC4F,
+      #1B9C3A,
+      #158030
+    );
+  }
+  
+  /* 4. 警告按钮 (Warning Button) - 橙色系 */
+  .el-button--warning:not(.is-plain) {
+    @include colored-button(
+      #FF8336, #F2711C,
+      #CF5A0C,
+      #FF924F, #FF7D2E,
+      #D96214,
+      #B54D0E
+    );
+  }
+  
+  /* 5. 危险按钮 (Danger Button) - 红色系 */
+  .el-button--danger:not(.is-plain) {
+    @include colored-button(
+      #EB2F3C, #D7000F,
+      #B0000C,
+      #F5424E, #E61221,
+      #C2000E,
+      #96000A
+    );
+  }
+  
+  /* 6. 信息按钮 (Info Button) - 灰色系 */
+  .el-button--info:not(.is-plain) {
+    @include colored-button(
+      #C2C2C2, #B5B5B5,
+      #999999,
+      #D1D1D1, #C2C2C2,
+      #A3A3A3,
+      #858585
+    );
+  }
+  
+  /* =================================
+     Form 表单组件拟物化风格定制
+     ================================= */
+  
+  /* 1. Input & Textarea 输入框 */
+  .el-input__wrapper, .el-textarea__inner {
+    // 覆盖默认边框，使用更细腻的颜色
+    box-shadow: 0 0 0 1px #DCDCDC inset !important;
+    background-color: #FAFAFA; // 微灰背景，模拟凹陷
+    transition: all 0.2s;
+    
+    // 内阴影，增强凹陷感
+    &:not(.is-focus) {
+      box-shadow: 0 0 0 1px #DCDCDC inset, inset 0 1px 2px rgba(0,0,0,0.03) !important;
+    }
+  
+    &.is-focus, &:focus {
+      background-color: #FFFFFF;
+      // 聚焦时：Primary 色边框 + 辉光
+      box-shadow: 0 0 0 1px #5E94FF inset, 0 0 0 2px rgba(94, 148, 255, 0.2) !important;
+    }
+    
+    &:hover:not(.is-focus):not(:focus) {
+      background-color: #FFFFFF;
+      box-shadow: 0 0 0 1px #C0C0C0 inset !important;
+    }
+  }
+  
+  /* 2. Switch 开关 */
+  .el-switch {
+    // 轨道样式
+    .el-switch__core {
+      background-color: #E6E6E6;
+      border-color: #DCDCDC;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); // 轨道内阴影
+      
+      // 圆钮样式
+      .el-switch__action {
+        box-shadow: 0 1px 2px rgba(0,0,0,0.2); // 圆钮投影
+        background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      }
+    }
+    
+    &.is-checked .el-switch__core {
+      background-color: #2CCF52; // 开启状态绿色
+      border-color: #21BA45;
+      
+      .el-switch__action {
+        background: #FFFFFF;
+      }
+    }
+  }
+  
+  /* 3. Checkbox 复选框 */
+  .el-checkbox {
+    .el-checkbox__inner {
+      border-radius: 50% !important; // 强制变圆
+      border: 1px solid #DCDCDC;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      box-shadow: 0 1px 1px rgba(0,0,0,0.05); // 微立体
+      width: 20px;
+      height: 20px;
+      transition: all 0.2s;
+      
+      &:after {
+        border-color: #FFFFFF;
+        border-width: 2px;
+        left: 7px;
+        top: 4px;
+        width: 3px;
+        height: 7px;
+      }
+    }
+  
+    // Hover 状态
+    &:hover .el-checkbox__inner {
+      border-color: #C0C0C0;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 100%);
+    }
+    
+    // 选中状态
+    &.is-checked .el-checkbox__inner {
+      background: linear-gradient(180deg, #6B9DFF 0%, #5389FF 100%); // Primary 渐变
+      border-color: #487ACF;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); // 内阴影增强
+      
+      &:after {
+        transform: rotate(45deg) scaleY(1);
+        border: 2px solid #FFFFFF;
+        border-left: 0;
+        border-top: 0;
+        left: 7px;
+        top: 4px;
+        width: 3px;
+        height: 7px;
+      }
+    }
+  
+    // 半选状态
+    .el-checkbox__input.is-indeterminate .el-checkbox__inner {
+      background: linear-gradient(180deg, #6B9DFF 0%, #5389FF 100%);
+      border-color: #487ACF;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+      
+      &:before {
+        content: "";
+        position: absolute;
+        background-color: #FFFFFF;
+        height: 4px;
+        transform: scale(0.5);
+        left: 0;
+        right: 0;
+        top: 7px;
+      }
+  
+      &:after {
+        display: none;
+      }
+    }
+  }
+  
+  /* 4. Radio 单选框 */
+  .el-radio {
+    .el-radio__inner {
+      border: 1px solid #DCDCDC;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+      width: 20px;
+      height: 20px;
+    }
+  
+    // Hover 状态
+    &:hover .el-radio__inner {
+      border-color: #C0C0C0;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F0F0F0 100%);
+    }
+    
+    &.is-checked .el-radio__inner {
+      background: linear-gradient(180deg, #6B9DFF 0%, #5389FF 100%);
+      border-color: #487ACF;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.15);
+      
+      // 恢复标准单选圆点样式，或者保持对勾取决于需求
+      // 此处保持对勾风格以维持一致性，若需圆点可修改为 border-radius: 50% + background-color
+      &:after {
+        content: "";
+        width: 3px;
+        height: 7px;
+        border: 2px solid #FFFFFF;
+        border-left: 0;
+        border-top: 0;
+        left: 7px;
+        top: 4px;
+        transform: rotate(45deg) scaleY(1);
+        border-radius: 0;
+        background: none;
+      }
+    }
+  }
+  
+  /* 5. Slider 滑块 */
+  .el-slider {
+    // 轨道
+    .el-slider__runway {
+      height: 6px;
+      background-color: #E6E6E6;
+      border: none;
+      border-radius: 3px;
+      box-shadow: 
+        inset 0 1px 3px rgba(0,0,0,0.15), // 加深内阴影
+        0 1px 0 rgba(255,255,255,0.8);    // 底部强高光，增强嵌入感
+    }
+  
+    // 已选进度条
+    .el-slider__bar {
+      height: 6px;
+      background: linear-gradient(180deg, #6B9DFF 0%, #5389FF 100%);
+      border-radius: 3px;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.3); // 微光泽
+    }
+  
+    // 滑块按钮
+    .el-slider__button {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #DCDCDC;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2); // 按钮投影
+      
+      // 增加中心装饰点，使其更像实体旋钮
+      &:after {
+        content: "";
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #DCDCDC;
+        margin: 6px auto; // (20 - 2(border) - 6)/2 = 6
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.1);
+      }
+    }
+  
+    // 滑块按钮 Hover
+    .el-slider__button-wrapper:hover .el-slider__button,
+    .el-slider__button-wrapper.dragging .el-slider__button {
+      transform: scale(1.1);
+      border-color: #C0C0C0;
+      
+      &:after {
+        background-color: #C0C0C0;
+      }
+    }
+  }
+  
+  /* 6. Rate 评分 */
+  .el-rate {
+    .el-rate__item {
+      .el-rate__icon {
+        // 未选中状态：灰色凹陷效果
+        color: #DCDCDC; // 基础灰色
+        
+        // 使用 SVG 滤镜或 text-shadow 模拟凹陷感 (Icon 是字体或 SVG，text-shadow 兼容性好)
+        // 注意：Element Plus 的 Rate Icon 可能是 SVG，text-shadow 可能无效，尝试 filter drop-shadow
+        filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.8)) drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.1));
+        transition: all 0.2s;
+  
+        &.is-active {
+          // 选中状态：橙色凸起效果
+          color: #FFB800;
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2)); // 柔和投影
+        }
+        
+        // Hover 预选状态
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+  
+  /* 自定义状态类 - 用于演示 "删除项目" (红叉) 和 "添加项目" (加号) */
+  .custom-status-checkbox {
+    // 删除项目 (红叉)
+    &.status-delete .el-checkbox__inner {
+      border-radius: 50% !important;
+      // 背景图设置：默认位置 0 0，大小 100% auto
+      background-position: 0 0;
+      background-size: 100% auto;
+      border-color: #DCDCDC;
+      width: 20px;
+      height: 20px;
+      
+      // 移除之前的伪元素绘制 (因为将使用背景图 Sprite)
+      &:after, &:before {
+        display: none;
+      }
+    }
+  
+    // 删除项目 - Hover 状态
+    &.status-delete:hover .el-checkbox__inner {
+      background-position: 0 -36px;
+    }
+  
+    // 添加项目 (加号)
+    &.status-add .el-checkbox__inner {
+      border-radius: 50% !important;
+      background: #FFFFFF;
+      border-color: #DCDCDC;
+      width: 20px;
+      height: 20px;
+      
+      &:after {
+        content: "";
+        border: none;
+        width: 10px;
+        height: 2px;
+        background-color: #999999;
+        transform: none;
+        left: 5px; // 修正居中 (20-10)/2
+        top: 9px; // 修正居中 (20-2)/2
+      }
+      &:before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 10px;
+        background-color: #999999;
+        left: 9px; // 修正居中 (20-2)/2
+        top: 5px; // 修正居中 (20-10)/2
+      }
+    }
+  }
+  
+  /* =================================
+     导航 Navigation 组件拟物化风格定制
+     ================================= */
+  
+  /* 1. Tabs 标签页 */
+  .el-tabs {
+    --el-tabs-header-height: 40px;
+  
+    .el-tabs__header {
+      margin-bottom: 20px;
+    }
+  
+    // 导航条背景
+    .el-tabs__nav-wrap::after {
+      height: 1px;
+      background-color: #DCDCDC;
+      box-shadow: 0 1px 0 #FFFFFF; // 底部高光
+    }
+    
+    // 标签项
+    .el-tabs__item {
+      font-weight: 500;
+      color: #666666;
+      text-shadow: 0 1px 0 #FFFFFF;
+      transition: all 0.3s;
+      
+      &:hover {
+        color: #333333;
+      }
+      
+      &.is-active {
+        color: #409EFF;
+        text-shadow: 0 0 1px rgba(64, 158, 255, 0.2);
+      }
+    }
+    
+    // 底部活动条
+    .el-tabs__active-bar {
+      height: 3px;
+      border-radius: 1.5px;
+      background: linear-gradient(90deg, #6B9DFF 0%, #5389FF 100%);
+      box-shadow: 0 1px 2px rgba(83, 137, 255, 0.3);
+    }
+    
+    // Card 风格 Tabs
+    &.el-tabs--card {
+      .el-tabs__header {
+        border-bottom: 1px solid #DCDCDC;
+      }
+      
+      .el-tabs__nav {
+        border: none;
+      }
+      
+      .el-tabs__item {
+        border: 1px solid #DCDCDC;
+        border-bottom: none;
+        background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+        margin-right: 4px;
+        border-radius: 6px 6px 0 0;
+        box-shadow: inset 0 1px 0 #FFFFFF;
+        
+        &.is-active {
+          background: #FFFFFF;
+          border-bottom-color: #FFFFFF;
+          box-shadow: 0 -1px 2px rgba(0,0,0,0.05);
+        }
+        
+        &:hover:not(.is-active) {
+          background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+        }
+      }
+    }
+  }
+  
+  /* 2. Steps 步骤条 */
+  .el-steps {
+    .el-step__head {
+      .el-step__line {
+        background-color: #E6E6E6;
+        height: 4px;
+        top: 10px;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); // 轨道凹槽
+        
+        .el-step__line-inner {
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.3); // 进度条高光
+        }
+      }
+      
+      .el-step__icon {
+        width: 24px;
+        height: 24px;
+        border: 1px solid #DCDCDC;
+        background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        
+        &.is-text {
+          font-weight: 600;
+          text-shadow: 0 1px 0 #FFFFFF;
+        }
+      }
+      
+      // 完成状态
+      &.is-finish {
+        .el-step__icon {
+          background: linear-gradient(180deg, #6B9DFF 0%, #5389FF 100%);
+          border-color: #487ACF;
+          color: #FFFFFF;
+          text-shadow: 0 -1px 0 rgba(0,0,0,0.1);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+          
+          // 内部线条或文字颜色
+          .el-step__icon-inner {
+            font-weight: bold;
+          }
+        }
+      }
+      
+      // 进行中状态
+      &.is-process {
+        .el-step__icon {
+          border-color: #409EFF;
+          color: #409EFF;
+          background: #FFFFFF;
+          box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+        }
+      }
+    }
+    
+    .el-step__title {
+      font-weight: 500;
+      
+      &.is-finish {
+        color: #333333;
+      }
+      &.is-process {
+        color: #409EFF;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  /* 3. Breadcrumb 面包屑 */
+  .el-breadcrumb {
+    .el-breadcrumb__item {
+      .el-breadcrumb__inner {
+        color: #666666;
+        font-weight: 500;
+        text-shadow: 0 1px 0 #FFFFFF;
+        
+        a:hover, &.is-link:hover {
+          color: #409EFF;
+          text-decoration: none;
+        }
+      }
+      
+      &:last-child .el-breadcrumb__inner {
+        color: #333333;
+        font-weight: 600;
+      }
+    }
+  }
+  
+  /* =================================
+     反馈 Feedback 组件拟物化风格定制
+     ================================= */
+  
+  /* 1. Alert 警告 */
+  .el-alert {
+    border: 1px solid;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    
+    // 成功
+    &.el-alert--success.is-light {
+      background: linear-gradient(180deg, #F0F9EB 0%, #E1F3D8 100%);
+      border-color: #C2E7B0;
+      color: #67C23A;
+      
+      .el-alert__icon { color: #67C23A; }
+    }
+    
+    // 信息
+    &.el-alert--info.is-light {
+      background: linear-gradient(180deg, #F4F4F5 0%, #E9E9EB 100%);
+      border-color: #D3D4D6;
+      color: #909399;
+      
+      .el-alert__icon { color: #909399; }
+    }
+    
+    // 警告
+    &.el-alert--warning.is-light {
+      background: linear-gradient(180deg, #FDF6EC 0%, #FAECD8 100%);
+      border-color: #F3D19E;
+      color: #E6A23C;
+      
+      .el-alert__icon { color: #E6A23C; }
+    }
+    
+    // 错误
+    &.el-alert--error.is-light {
+      background: linear-gradient(180deg, #FEF0F0 0%, #FDE2E2 100%);
+      border-color: #FBC4C4;
+      color: #F56C6C;
+      
+      .el-alert__icon { color: #F56C6C; }
+    }
+  }
+  
+  /* 2. Message 消息提示 */
+  .el-message {
+    border-radius: 8px;
+    border: 1px solid #DCDCDC;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); // 悬浮投影
+    background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+    padding: 15px 20px;
+    
+    // 覆盖 Element 的默认边框颜色
+    --el-message-border-color: #DCDCDC;
+    
+    .el-message__content {
+      color: #333333;
+      font-weight: 500;
+    }
+
+    // 成功消息 (Success Message)
+    &.el-message--success {
+      background: linear-gradient(180deg, #F0F9EB 0%, #E1F3D8 100%);
+      border-color: #C2E7B0;
+      box-shadow: 0 4px 12px rgba(103, 194, 58, 0.15); // 绿色光晕
+      
+      .el-message__content {
+        color: #67C23A;
+      }
+      .el-message__icon {
+        color: #67C23A;
+      }
+    }
+
+    // 警告消息 (Warning Message)
+    &.el-message--warning {
+      background: linear-gradient(180deg, #FDF6EC 0%, #FAECD8 100%);
+      border-color: #F3D19E;
+      box-shadow: 0 4px 12px rgba(230, 162, 60, 0.15);
+      
+      .el-message__content {
+        color: #E6A23C;
+      }
+      .el-message__icon {
+        color: #E6A23C;
+      }
+    }
+
+    // 错误消息 (Error Message)
+    &.el-message--error {
+      background: linear-gradient(180deg, #FEF0F0 0%, #FDE2E2 100%);
+      border-color: #FBC4C4;
+      box-shadow: 0 4px 12px rgba(245, 108, 108, 0.15);
+      
+      .el-message__content {
+        color: #F56C6C;
+      }
+      .el-message__icon {
+        color: #F56C6C;
+      }
+    }
+
+    // 信息消息 (Info Message)
+    &.el-message--info {
+      background: linear-gradient(180deg, #F4F4F5 0%, #E9E9EB 100%);
+      border-color: #D3D4D6;
+      box-shadow: 0 4px 12px rgba(144, 147, 153, 0.15);
+      
+      .el-message__content {
+        color: #909399;
+      }
+      .el-message__icon {
+        color: #909399;
+      }
+    }
+  }
+  
+  /* 3. Notification 通知 */
+  .el-notification {
+    border-radius: 8px;
+    border: 1px solid #DCDCDC;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+    
+    .el-notification__title {
+      font-weight: 600;
+      color: #333333;
+    }
+  }
+  
+  /* 4. Dialog & Drawer 对话框与抽屉 */
+  .el-dialog, .el-drawer {
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2); // 强烈的层级投影
+    border: 1px solid #DCDCDC;
+    background: #F7F7F7; // 整体背景微灰
+    
+    // 标题栏
+    .el-dialog__header, .el-drawer__header {
+      background: linear-gradient(180deg, #FBFBFB 0%, #F1F1F1 100%);
+      border-bottom: 1px solid #DCDCDC;
+      margin-right: 0;
+      padding: 15px 20px;
+      
+      .el-dialog__title {
+        font-weight: 600;
+        color: #333333;
+        text-shadow: 0 1px 0 #FFFFFF;
+      }
+    }
+    
+    // 内容区
+    .el-dialog__body, .el-drawer__body {
+      background: #FFFFFF;
+      padding: 20px;
+    }
+    
+    // 底部按钮区
+    .el-dialog__footer {
+      background: #F7F7F7;
+      border-top: 1px solid #DCDCDC;
+      padding: 15px 20px;
+    }
+  }
+  
+  /* 5. Tooltip & Popover */
+  .el-popper {
+    border: 1px solid #DCDCDC !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%) !important;
+    
+    &.is-dark {
+      background: linear-gradient(180deg, #444444 0%, #333333 100%) !important;
+      border-color: #222222 !important;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    
+    // 箭头处理
+    .el-popper__arrow::before {
+      border: 1px solid #DCDCDC !important;
+      background: #FAFAFA !important;
+    }
+    
+    &.is-dark .el-popper__arrow::before {
+      background: #333333 !important;
+      border-color: #222222 !important;
+    }
+  }
+  
+  /* =================================
+     Card 卡片拟物化风格定制
+     ================================= */
+  .el-card {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); // 基础微阴影
+    border-radius: 8px;
+    overflow: hidden;
+  
+    // 标题栏定制
+    .el-card__header {
+      background: linear-gradient(180deg, #FBFBFB 0%, #F1F1F1 100%); // 灰色渐变背景
+      border-bottom: 1px solid #DCDCDC;
+      padding: 12px 20px;
+      
+      // 标题文字样式
+      color: #666666;
+      font-size: 14px;
+      font-weight: 500;
+      text-shadow: 0 1px 0 #FFFFFF; // 文字白边，增强立体感
+      
+      // 如果 Header 里面有操作区
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .el-card__body {
+      padding: 20px;
+      background-color: #FFFFFF;
+    }
+  }
+  
+  /* =================================
+     数据展示 Data 组件拟物化风格定制
+     ================================= */
+  
+  /* 1. Table 表格 */
+  .el-table {
+    --el-table-header-bg-color: #F5F5F5;
+    --el-table-border-color: #E8E8E8;
+    --el-table-text-color: #333333;
+    --el-table-header-text-color: #666666;
+  
+  
+    // 表头样式
+    th.el-table__cell {
+      background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+      border-bottom: 1px solid #DCDCDC;
+      height: 40px;
+      padding: 0; // 紧凑
+      font-weight: 600;
+      color: #666;
+      text-shadow: 0 1px 0 #FFFFFF;
+      box-shadow: inset 0 1px 0 #FFFFFF; // 顶部高光
+    }
+    
+    // 单元格样式
+    td.el-table__cell {
+      
+      color: #333;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  
+    // 最后一行的边框处理
+    .el-table__inner-wrapper::before {
+      display: none; // 移除底部默认的 border-bottom
+    }
+  
+    // 斑马纹增强
+    &.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+      background: #FCFCFC; // 极淡的灰
+      box-shadow: none;
+    }
+    
+    // Hover 效果
+    .el-table__body tr:hover > td.el-table__cell {
+      background-color: #FFFDEE !important; // 浅黄色高亮，拟物化常见做法 (或保持浅灰)
+      // 这里使用浅灰以匹配图片风格
+      background-color: #F6F6F6 !important;
+      box-shadow: none;
+    }
+  }
+  
+  /* 2. Tag 标签 */
+  .el-tag {
+    border-radius: 12px; // 大圆角
+    border: 1px solid;
+    // 增加内阴影和外阴影，模拟实体铭牌或贴纸质感
+    box-shadow: 
+      0 1px 1px rgba(0,0,0,0.05),
+      inset 0 1px 0 rgba(255,255,255,0.4); 
+    font-weight: 700; // 加粗字体
+    text-shadow: 0 1px 0 rgba(255,255,255,0.8); // 文字白边
+    padding: 0 10px; // 增加内边距
+    height: 24px;
+    line-height: 22px;
+    
+    // 默认标签 (Primary 变体 - 蓝色)
+    &.el-tag--light, &.el-tag--primary {
+      --el-tag-bg-color: linear-gradient(180deg, #E6F0FF 0%, #D4E4FA 100%);
+      --el-tag-border-color: #8EB7E9;
+      --el-tag-text-color: #3B73AF;
+      background: var(--el-tag-bg-color);
+    }
+    
+    // 绿色 (Success)
+    &.el-tag--success {
+      --el-tag-bg-color: linear-gradient(180deg, #EFF9E6 0%, #E1F2D1 100%);
+      --el-tag-border-color: #A6D482;
+      --el-tag-text-color: #5D9333; // 深绿色文字
+      background: var(--el-tag-bg-color);
+    }
+    
+    // 灰色 (Info)
+    &.el-tag--info {
+      --el-tag-bg-color: linear-gradient(180deg, #F7F7F7 0%, #EDEDED 100%);
+      --el-tag-border-color: #DCDCDC;
+      --el-tag-text-color: #888888;
+      background: var(--el-tag-bg-color);
+    }
+    
+    // 橙色 (Warning)
+    &.el-tag--warning {
+      --el-tag-bg-color: linear-gradient(180deg, #FFF6E6 0%, #FFE9CC 100%);
+      --el-tag-border-color: #F0CFA0;
+      --el-tag-text-color: #D98826;
+      background: var(--el-tag-bg-color);
+    }
+    
+    // 红色 (Danger)
+    &.el-tag--danger {
+      --el-tag-bg-color: linear-gradient(180deg, #FFF0F0 0%, #FFE2E2 100%);
+      --el-tag-border-color: #F2A9A9;
+      --el-tag-text-color: #D64646;
+      background: var(--el-tag-bg-color);
+    }
+  }
+  
+  /* 3. Progress 进度条 */
+  .el-progress {
+    // 轨道 - 凹槽效果
+    .el-progress-bar__outer {
+      background-color: #E6E6E6;
+      border: none;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.15); // 仅保留内阴影，去除底部高光
+      border-radius: 10px; // 更圆润
+    }
+    
+    // 进度条 - 凸起/流光效果
+    .el-progress-bar__inner {
+      // 增加玻璃质感的高光叠加
+      background-image: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 100%);
+      box-shadow: 
+        inset 0 1px 0 rgba(255,255,255,0.4), // 顶部高光
+        0 1px 2px rgba(0,0,0,0.1);           // 外部微投影
+      border-radius: 10px;
+    }
+  }
+  
+  /* 4. Badge 徽章 */
+  .el-badge__content {
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.1) 100%);
+    
+    &.is-dot {
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle at 30% 30%, #FF6D6D, #F56C6C);
+      border: 1px solid #CB5B5B;
+    }
+  }
+  
+  /* 5. Avatar 头像 */
+  .el-avatar {
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    background: #F2F2F2;
+  }
+  
+  /* 6. Pagination 分页 */
+  .el-pagination {
+    .btn-prev, .btn-next, .el-pager li {
+      background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%) !important;
+      border: 1px solid #DCDCDC;
+      border-radius: 4px;
+      margin: 0 2px;
+      min-width: 32px;
+      height: 32px;
+      line-height: 32px;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+      font-weight: 500;
+      
+      &:hover {
+        background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%) !important;
+        border-color: #C0C0C0;
+        color: #409EFF;
+      }
+      
+      &.is-active {
+        background: linear-gradient(180deg, #6B9DFF 0%, #5389FF 100%) !important;
+        border-color: #487ACF;
+        color: #FFFFFF;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+      }
+    }
+  }
+  
+  /* =================================
+     其他 Others 组件拟物化风格定制
+     ================================= */
+  
+  /* 1. Collapse 折叠面板 */
+  .el-collapse {
+    border-top: 1px solid #DCDCDC;
+    border-bottom: 1px solid #DCDCDC;
+    
+    .el-collapse-item__header {
+      background: linear-gradient(180deg, #FAFAFA 0%, #F5F5F5 100%);
+      border-bottom: 1px solid #DCDCDC;
+      padding-left: 20px;
+      font-weight: 500;
+      color: #333333;
+      text-shadow: 0 1px 0 #FFFFFF;
+      height: 48px;
+      
+      &.is-active {
+        border-bottom-color: #DCDCDC;
+      }
+    }
+    
+    .el-collapse-item__wrap {
+      border-bottom: 1px solid #DCDCDC;
+      background-color: #FCFCFC; // 内容区微灰，营造凹陷感
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); // 顶部内阴影
+      
+      .el-collapse-item__content {
+        padding: 20px;
+        color: #666666;
+      }
+    }
+  }
+  
+  /* 2. Divider 分割线 */
+  .el-divider {
+    background-color: transparent; // 移除默认背景色
+    border-top: 1px solid #DCDCDC; // 深色线
+    border-bottom: 1px solid #FFFFFF; // 浅色线，形成刻痕效果
+    margin: 24px 0;
+    
+    &.el-divider--vertical {
+      border-top: none;
+      border-bottom: none;
+      border-left: 1px solid #DCDCDC;
+      border-right: 1px solid #FFFFFF;
+      display: inline-block;
+      width: 0;
+      height: 1em;
+      vertical-align: middle;
+    }
+    
+    // 带文字的分割线
+    .el-divider__text {
+      background-color: #F5F7FA; // 需匹配背景色，或者设为透明如果背景单一
+      color: #999999;
+      text-shadow: 0 1px 0 #FFFFFF;
+    }
+  }
+  
+  /* 3. Skeleton 骨架屏 */
+  .el-skeleton {
+    .el-skeleton__item {
+      background: #E6E6E6;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.06); // 凹陷感
+      border-radius: 4px;
+    }
+    
+    // 动画光效增强
+    &.is-animated .el-skeleton__item {
+      background: linear-gradient(90deg, #E6E6E6 25%, #F0F0F0 37%, #E6E6E6 63%);
+      background-size: 400% 100%;
+    }
+  }
+  
+  /* 4. Empty 空状态 */
+  .el-empty {
+    padding: 40px 0;
+    
+    .el-empty__image {
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05)); // 图片投影
+      opacity: 0.8;
+    }
+    
+    .el-empty__description {
+      p {
+        color: #999999;
+        text-shadow: 0 1px 0 #FFFFFF;
+        font-weight: 500;
+      }
+    }
+  }
+
+} // End of @mixin theme-overrides
+
+/* 通用混合宏：用于生成彩色按钮的拟物化样式 */
+// 放在外部以便在 mixin 内部或其他地方调用
+@mixin colored-button($bg-start, $bg-end, $border-color, $hover-start, $hover-end, $active-bg, $active-border) {
+  border: 1px solid $border-color;
+  background: linear-gradient(180deg, $bg-start 0%, $bg-end 100%);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
+  
+  // 强制文字颜色为白色
+  --el-button-text-color: #FFFFFF;
+  color: #FFFFFF;
+
+  &:hover, &:focus {
+    background: linear-gradient(180deg, $hover-start 0%, $hover-end 100%);
+    border-color: $border-color;
+    color: #FFFFFF;
+    --el-button-text-color: #FFFFFF;
+  }
+
+  &:active {
+    // 同样使用渐变，模拟纯色效果（起始和结束色相同）
+    background: linear-gradient(180deg, $active-bg 0%, $active-bg 100%);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: $active-border;
+    color: #FFFFFF;
+  }
+}

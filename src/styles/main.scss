@@ -1,0 +1,19 @@
+// 引入并应用 Element Plus 拟物化样式覆盖
+// 注意：index.scss 通过 additionalData 注入，但其中的 theme-overrides mixin 需要在此处手动调用以生成 CSS
+@include theme-overrides;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #F6F6F6; /* 全局背景底色 */
+  color: #626262; /* 正文颜色 */
+  font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #383838; /* 标题颜色 */
+  font-weight: 400; /* Light */
+}
